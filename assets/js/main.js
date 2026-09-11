@@ -1035,19 +1035,21 @@ function initTabs(e) {
   });
 }
 function formatCurrency(e) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-IN", {
     style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
+    currency: "INR",
     maximumFractionDigits: 2,
   }).format(e);
 }
 function formatLargeCurrency(e) {
-  return e >= 1e6
-    ? "$" + (e / 1e6).toFixed(2) + "M"
-    : e >= 1e3
-      ? "$" + (e / 1e3).toFixed(0) + "K"
-      : formatCurrency(e);
+  if (e >= 1e7) {
+    return "₹" + (e / 1e7).toFixed(2) + " Cr";
+  } else if (e >= 1e5) {
+    return "₹" + (e / 1e5).toFixed(2) + " Lakh";
+  } else if (e >= 1e3) {
+    return "₹" + (e / 1e3).toFixed(1) + "K";
+  }
+  return formatCurrency(e);
 }
 function calculateEMI(e, t, n) {
   const o = t / 100 / 12,
@@ -1100,12 +1102,7 @@ function updateCalculatorForPanel(e) {
   const d = parseFloat(t.value),
     u = parseFloat(o.value),
     p = parseFloat(n.value);
-  ((i.textContent =
-    d >= 1e6
-      ? "$" + (d / 1e6).toFixed(1) + "M"
-      : d >= 1e3
-        ? "$" + (d / 1e3).toFixed(0) + "K"
-        : formatCurrency(d)),
+  ((i.textContent = formatLargeCurrency(d)),
     (r.textContent = p),
     (a.textContent = u.toFixed(1) + "%"));
   const m = calculateEMI(d, u, p),
