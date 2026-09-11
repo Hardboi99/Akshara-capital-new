@@ -11,11 +11,13 @@
   } catch (e) {}
 })(),
   gsap.registerPlugin(ScrollTrigger, SplitText));
+
 let progress = 0,
   progressInterval = null,
   isWindowLoaded = !1,
   startTime = performance.now(),
   minLoadTime = 1500;
+
 function stopLenis() {
   if ("undefined" != typeof Lenis && window.lenis)
     try {
@@ -24,6 +26,7 @@ function stopLenis() {
       console.warn("Lenis stop error:", e);
     }
 }
+
 function startLenis() {
   if ("undefined" != typeof Lenis && window.lenis)
     try {
@@ -42,9 +45,11 @@ function startLenis() {
       console.warn("Lenis start error:", e);
     }
 }
+
 function preventScroll(e) {
   return (e.preventDefault(), e.stopPropagation(), !1);
 }
+
 function setOverflowHidden() {
   if (
     (document.body &&
@@ -66,27 +71,7 @@ function setOverflowHidden() {
       console.warn("Lenis scrollTo error:", e);
     }
 }
-(window.scrollTo(0, 0),
-  window.history &&
-    window.history.scrollRestoration &&
-    (window.history.scrollRestoration = "manual"),
-  requestAnimationFrame(() => {
-    if ((window.scrollTo(0, 0), "undefined" != typeof Lenis && window.lenis))
-      try {
-        "function" == typeof window.lenis.scrollTo &&
-          window.lenis.scrollTo(0, { immediate: !0 });
-      } catch (e) {}
-  }),
-  document.body
-    ? setOverflowHidden()
-    : document.addEventListener("DOMContentLoaded", () => {
-        setOverflowHidden();
-      }),
-  "complete" === document.readyState && (isWindowLoaded = !0));
-const readyStateCheck = setInterval(() => {
-  "complete" === document.readyState &&
-    ((isWindowLoaded = !0), clearInterval(readyStateCheck));
-}, 100);
+
 function hideSectionTitles() {
   const e = document.querySelectorAll("[data-section-title]");
   e.length &&
@@ -107,6 +92,7 @@ function hideSectionTitles() {
       gsap.set(e, { opacity: 0, visibility: "hidden" });
     });
 }
+
 function setupLoaderBlocks() {
   const e = document.querySelectorAll(".loader-block"),
     o = e.length;
@@ -118,6 +104,7 @@ function setupLoaderBlocks() {
     ((e.style.width = `${n}%`), (e.style.left = `${r}%`));
   });
 }
+
 function startProgressCounter() {
   const e = setInterval(() => {
     const o = document.querySelector(".loader-percent"),
@@ -158,6 +145,7 @@ function startProgressCounter() {
       }, 25)));
   }, 50);
 }
+
 function finishLoader() {
   const e = gsap.timeline({ defaults: { ease: "power2.inOut" } });
   if (
@@ -200,8 +188,8 @@ function finishLoader() {
         (window.removeEventListener("wheel", preventScroll),
           window.removeEventListener("touchmove", preventScroll),
           window.removeEventListener("scroll", preventScroll),
-          document.body.classList.remove("overflow-hidden"),
-          (document.body.style.overflow = ""),
+          document.body && document.body.classList.remove("overflow-hidden"),
+          document.body && (document.body.style.overflow = ""),
           document.documentElement &&
             (document.documentElement.style.overflow = ""),
           setTimeout(() => {
@@ -232,12 +220,43 @@ function finishLoader() {
         "-=0.6",
       ));
 }
-(window.addEventListener("load", () => {
-  ((isWindowLoaded = !0),
-    clearInterval(readyStateCheck),
-    window.scrollTo(0, 0));
-}),
-  startProgressCounter(),
+
+// Check if preloader element actually exists in the DOM
+const preloaderEl = document.querySelector(".preloader-area");
+
+if (preloaderEl) {
+  // Preloader is present: run standard preloader flow
+  (window.scrollTo(0, 0),
+    window.history &&
+      window.history.scrollRestoration &&
+      (window.history.scrollRestoration = "manual"),
+    requestAnimationFrame(() => {
+      if ((window.scrollTo(0, 0), "undefined" != typeof Lenis && window.lenis))
+        try {
+          "function" == typeof window.lenis.scrollTo &&
+            window.lenis.scrollTo(0, { immediate: !0 });
+        } catch (e) {}
+    }),
+    document.body
+      ? setOverflowHidden()
+      : document.addEventListener("DOMContentLoaded", () => {
+          setOverflowHidden();
+        }),
+    "complete" === document.readyState && (isWindowLoaded = !0));
+
+  const readyStateCheck = setInterval(() => {
+    "complete" === document.readyState &&
+      ((isWindowLoaded = !0), clearInterval(readyStateCheck));
+  }, 100);
+
+  window.addEventListener("load", () => {
+    ((isWindowLoaded = !0),
+      clearInterval(readyStateCheck),
+      window.scrollTo(0, 0));
+  });
+
+  startProgressCounter();
+
   document.addEventListener("DOMContentLoaded", () => {
     (hideSectionTitles(), setupLoaderBlocks());
     const e = document.querySelector(".loader-title");
@@ -259,4 +278,34 @@ function finishLoader() {
         },
       );
     }
-  }));
+  });
+} else {
+  // Preloader is NOT present: immediately activate page & animations
+  const runDirectInit = () => {
+    if (document.body) {
+      document.body.classList.remove("overflow-hidden");
+      document.body.style.overflow = "";
+    }
+    if (document.documentElement) {
+      document.documentElement.style.overflow = "";
+    }
+    startLenis();
+    if ("function" == typeof initHeroAnimation) initHeroAnimation();
+    if ("function" == typeof initAnimations) initAnimations();
+    if ("undefined" != typeof ScrollTrigger) {
+      setTimeout(() => ScrollTrigger.refresh(), 100);
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runDirectInit);
+  } else {
+    runDirectInit();
+  }
+
+  window.addEventListener("load", () => {
+    if ("function" == typeof initHeroAnimation) initHeroAnimation();
+    if ("function" == typeof initAnimations) initAnimations();
+    if ("undefined" != typeof ScrollTrigger) ScrollTrigger.refresh();
+  });
+}
