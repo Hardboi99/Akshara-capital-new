@@ -10114,10 +10114,7 @@ section .pin-spacer {
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-primary) 20%, transparent);
     }
-    background-image: url('../img/menu/menu-background-shape.webp');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: linear-gradient(170deg, #013B72 0%, #061A2C 100%) !important;
     padding: calc(var(--spacing) * 4);
     @media (width >= 640px) {
       padding: calc(var(--spacing) * 6);
@@ -11455,6 +11452,50 @@ body {
     .akshara-mainbar .header-wrapper {
         min-height: 66px;
     }
+
+    .akshara-mainbar .main-menu {
+        background: linear-gradient(170deg, #013B72 0%, #061A2C 100%) !important;
+        border-top: 1px solid rgba(225, 160, 26, 0.35) !important;
+        box-shadow: 0 20px 45px rgba(1, 59, 114, 0.5) !important;
+    }
+
+    .akshara-mainbar .main-menu .sub-menu,
+    .akshara-mainbar .main-menu .mega-menu {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+
+    .akshara-mainbar .main-menu > ul > li > button,
+    .akshara-mainbar .main-menu > ul > li > a {
+        color: #FFFFFF !important;
+        font-weight: 600;
+    }
+
+    .akshara-mainbar .main-menu > ul > li > button:hover,
+    .akshara-mainbar .main-menu > ul > li > a:hover {
+        color: #E1A01A !important;
+    }
+
+    .akshara-mainbar .main-menu svg {
+        color: #FFFFFF !important;
+        fill: currentColor;
+    }
+}
+
+/* Mobile Hamburger Toggle in Akshara Mainbar */
+.akshara-mainbar .menuToggle {
+    color: #013B72 !important;
+}
+
+.akshara-mainbar .menuToggle svg {
+    color: #013B72 !important;
+    stroke: #013B72 !important;
+}
+
+.akshara-mainbar .menuToggle:hover svg,
+.akshara-mainbar .menuToggle.is-active svg {
+    color: #E1A01A !important;
+    stroke: #E1A01A !important;
 }
 
 /* ===== PREMIUM HERO SLIDER ===== */
@@ -11487,7 +11528,8 @@ body {
 
 /* smoother easing on the slide-to-slide transition itself */
 .hero-image-slider .swiper-wrapper {
-    transition-timing-function: cubic-bezier(.65,0,.35,1) !important;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+    will-change: transform;
 }
 
 /* continuous Ken Burns zoom + pan while a slide is active */
@@ -11495,44 +11537,47 @@ body {
     filter: saturate(1.06) contrast(1.03);
     transform-origin: center center;
     will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 .swiper-slide-active .hero-slide-img-box img {
     animation: heroKenBurns 6.5s ease-in-out infinite alternate;
 }
 @keyframes heroKenBurns {
     0%   { transform: scale(1) translate(0,0); }
-    100% { transform: scale(1.12) translate(-1.5%, -1%); }
+    100% { transform: scale(1.1) translate(-1.2%, -0.8%); }
 }
 
 .hero-slide-gradient {
     background: linear-gradient(180deg, rgba(6,26,44,.05) 0%, rgba(6,26,44,.4) 45%, rgba(6,26,44,.88) 75%, rgba(6,26,44,.98) 100%) !important;
 }
 
-/* staggered content reveal, replays every time a slide becomes active */
+/* staggered content reveal, replays smoothly every time a slide becomes active */
 .hero-slide-badge,
 .hero-slide-content h3,
 .hero-slide-content p {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(14px);
+    will-change: opacity, transform;
 }
 .swiper-slide-active .hero-slide-badge {
-    animation: heroBadgePop .6s cubic-bezier(.16,1,.3,1) forwards;
-    animation-delay: .15s;
+    animation: heroBadgePop .4s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: .06s;
 }
 .swiper-slide-active .hero-slide-content h3 {
-    animation: heroContentUp .7s cubic-bezier(.16,1,.3,1) forwards;
-    animation-delay: .28s;
+    animation: heroContentUp .45s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: .12s;
 }
 .swiper-slide-active .hero-slide-content p {
-    animation: heroContentUp .7s cubic-bezier(.16,1,.3,1) forwards;
-    animation-delay: .4s;
+    animation: heroContentUp .45s cubic-bezier(.16,1,.3,1) forwards;
+    animation-delay: .18s;
 }
 @keyframes heroContentUp {
     to { opacity: 1; transform: translateY(0); }
 }
 @keyframes heroBadgePop {
-    0%   { opacity: 0; transform: translateY(18px) scale(.85); }
-    70%  { opacity: 1; transform: translateY(-2px) scale(1.04); }
+    0%   { opacity: 0; transform: translateY(14px) scale(.9); }
+    70%  { opacity: 1; transform: translateY(-1px) scale(1.02); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -12284,4 +12329,63 @@ body {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.45);
   color: #FFFFFF !important;
+}
+
+/* =========================================
+   AKSHARA CAPITAL — FINANCIAL SHOWCASE SECTION
+   ========================================= */
+
+.akshara-finance-showcase {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1200px;
+}
+
+.akshara-finance-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(225, 160, 26, 0.25) 0%, rgba(11, 95, 165, 0.4) 40%, transparent 72%);
+  filter: blur(45px);
+  animation: aksharaGlowPulse 6s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+.akshara-showcase-img {
+  filter: drop-shadow(0 25px 45px rgba(0, 20, 45, 0.65)) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+  animation: aksharaFloat 5s ease-in-out infinite;
+  will-change: transform, filter;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+.akshara-finance-showcase:hover .akshara-showcase-img {
+  animation-play-state: paused;
+  transform: translateY(-8px) scale(1.025);
+  filter: drop-shadow(0 30px 60px rgba(225, 160, 26, 0.22)) drop-shadow(0 20px 40px rgba(0, 20, 45, 0.75));
+}
+
+@keyframes aksharaFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(0.4deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes aksharaGlowPulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
 }
