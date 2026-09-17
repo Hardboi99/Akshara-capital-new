@@ -1409,3 +1409,29 @@ institutionalHeroWrappers.length &&
           });
         }));
   });
+
+// Auto-initialize hero and scroll animations if preloader is not present
+(function () {
+  const triggerInit = () => {
+    if (!document.querySelector(".preloader-area")) {
+      if (typeof window.initHeroAnimation === "function") {
+        window.initHeroAnimation();
+      }
+      if (typeof initAnimations === "function") {
+        initAnimations();
+      }
+      if (typeof ScrollTrigger !== "undefined") {
+        setTimeout(() => ScrollTrigger.refresh(), 100);
+      }
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", triggerInit);
+  } else {
+    triggerInit();
+  }
+
+  window.addEventListener("load", triggerInit);
+})();
+

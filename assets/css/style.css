@@ -7125,71 +7125,21 @@ section .pin-spacer {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
-.loader-block {
-  position: fixed;
-  height: 100vh;
-  background-color: #e2f16e;
-  width: 6%;
-}
-.loader-block:nth-child(1) {
-  left: 0%;
-}
-.loader-block:nth-child(2) {
-  left: 5%;
-}
-.loader-block:nth-child(3) {
-  left: 10%;
-}
-.loader-block:nth-child(4) {
-  left: 15%;
-}
-.loader-block:nth-child(5) {
-  left: 20%;
-}
-.loader-block:nth-child(6) {
-  left: 25%;
-}
-.loader-block:nth-child(7) {
-  left: 30%;
-}
-.loader-block:nth-child(8) {
-  left: 35%;
-}
-.loader-block:nth-child(9) {
-  left: 40%;
-}
-.loader-block:nth-child(10) {
-  left: 45%;
-}
-.loader-block:nth-child(11) {
-  left: 50%;
-}
-.loader-block:nth-child(12) {
-  left: 55%;
-}
-.loader-block:nth-child(13) {
-  left: 60%;
-}
-.loader-block:nth-child(14) {
-  left: 65%;
-}
-.loader-block:nth-child(15) {
-  left: 70%;
-}
-.loader-block:nth-child(16) {
-  left: 75%;
-}
-.loader-block:nth-child(17) {
-  left: 80%;
-}
-.loader-block:nth-child(18) {
-  left: 85%;
-}
-.loader-block:nth-child(19) {
-  left: 90%;
-}
-.loader-block:nth-child(20) {
-  left: 95%;
+.preloader-area,
+.loader-block,
+.loader-blocks-container,
+.loader-title,
+.loader-footer,
+.loader-percent,
+.loader-loading,
+.progress-bar,
+.progress-fill {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
 }
 .contact-map-iframe {
   border: 0;
@@ -12388,4 +12338,216 @@ body {
     opacity: 0.55;
     transform: scale(0.92);
   }
+}
+
+/* ==========================================================================
+   Floating WhatsApp Button
+   ========================================================================== */
+.floating-whatsapp-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  background-color: #25d366;
+  color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  outline: none;
+}
+
+.floating-whatsapp-btn:hover {
+  background-color: #20ba59;
+  color: #ffffff;
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 12px 28px rgba(37, 211, 102, 0.55), 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.floating-whatsapp-btn:active {
+  transform: translateY(0px) scale(0.95);
+}
+
+.floating-whatsapp-btn svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.floating-whatsapp-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.floating-whatsapp-btn .whatsapp-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: #25d366;
+  opacity: 0.6;
+  z-index: 1;
+  animation: waPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  pointer-events: none;
+}
+
+.floating-whatsapp-btn .whatsapp-tooltip {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  background-color: #0d1e32;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+}
+
+.floating-whatsapp-btn .whatsapp-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #0d1e32;
+}
+
+.floating-whatsapp-btn:hover .whatsapp-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+@keyframes waPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .floating-whatsapp-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 52px;
+    height: 52px;
+  }
+  .floating-whatsapp-btn svg {
+    width: 28px;
+    height: 28px;
+  }
+  .floating-whatsapp-btn .whatsapp-tooltip {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Authentication & Form Enhancements
+   ========================================================================== */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  padding-right: 48px !important;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+  z-index: 5;
+}
+
+.password-toggle-btn:hover {
+  color: var(--color-title_black, #061A2C);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.auth-feedback-alert {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+}
+
+.auth-feedback-alert.alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.auth-feedback-alert.alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.animate-auth-shake {
+  animation: authShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes authShake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(3px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+  40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+.custom-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.custom-checkbox-label input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  accent-color: #0a2540;
+  cursor: pointer;
 }
