@@ -11582,6 +11582,30 @@ body {
     box-shadow: 0 14px 40px rgba(0,0,0,.45), 0 0 20px rgba(225,160,26,.2) !important;
 }
 
+.hero-image-slider-wrapper {
+    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.45), 0 0 40px -10px rgba(225, 160, 26, 0.16) !important;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+    will-change: transform;
+}
+
+.hero-image-slider-wrapper:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 35px 75px -15px rgba(0, 0, 0, 0.55), 0 0 55px -5px rgba(225, 160, 26, 0.24) !important;
+}
+
+/* Fluid hardware accelerated scrolling rules */
+html.lenis, html.lenis body {
+    height: auto;
+}
+html {
+    scroll-behavior: auto !important;
+}
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
 /* =========================================
    AKSHARA CAPITAL — FAST & EASY APPLICATION PROCESS
    ========================================= */
@@ -11675,10 +11699,19 @@ body {
   white-space: nowrap;
 }
 
+.loan-process__badges span svg {
+  width: 15px;
+  height: 15px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
 .loan-process svg {
   width: 16px;
   height: 16px;
   stroke-width: 2;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .loan-process__timeline {
@@ -11704,7 +11737,7 @@ body {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--gold), #C88708);
-  transition: width .7s ease;
+  transition: width .7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .loan-process__timeline-nodes {
@@ -11726,7 +11759,14 @@ body {
   font-size: 13px;
   font-weight: 700;
   box-shadow: 0 5px 14px rgba(1, 59, 114, .08);
-  transition: .3s ease;
+  cursor: pointer;
+  transition: .3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.loan-process__timeline-nodes span:hover {
+  border-color: var(--gold);
+  color: var(--navy);
+  transform: scale(1.05);
 }
 
 .loan-process__timeline-nodes span.active {
@@ -11800,23 +11840,26 @@ body {
 
 .loan-process__icon {
   display: grid;
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   place-items: center;
   background: var(--navy);
   color: var(--gold);
-  border-radius: 10px;
+  border-radius: 12px;
   clip-path: polygon(0 0, 80% 0, 100% 20%, 100% 100%, 0 100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  box-shadow: 0 6px 16px rgba(1, 59, 114, 0.18);
 }
 
 .loan-process__card:hover .loan-process__icon {
   transform: scale(1.08) rotate(3deg);
+  box-shadow: 0 10px 22px rgba(1, 59, 114, 0.28);
 }
 
 .loan-process__icon svg {
   width: 22px;
   height: 22px;
+  stroke-width: 2.2;
 }
 
 .loan-process__card-content {
@@ -11866,6 +11909,12 @@ body {
   text-transform: none;
 }
 
+#sample-amount,
+#sample-emi {
+  display: inline-block;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
 .amount-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -11873,25 +11922,35 @@ body {
 }
 
 .amount-options button {
-  padding: 8px 5px;
+  padding: 9px 5px;
   border: 1px solid #DFE1E5;
-  border-radius: 6px;
+  border-radius: 8px;
   background: white;
   color: var(--navy);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
-  transition: .2s ease;
+  transition: all .2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .amount-options button:hover {
   border-color: var(--gold);
+  color: var(--navy-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(225, 160, 26, 0.16);
 }
 
 .amount-options button.active {
   border-color: var(--navy);
   background: var(--navy);
   color: var(--gold);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(1, 59, 114, 0.22);
+}
+
+.amount-options button:active {
+  transform: scale(0.97);
 }
 
 .widget-footer {
@@ -11928,6 +11987,11 @@ body {
   padding: 9px;
   border-radius: 6px;
   background: white;
+  transition: transform 0.2s ease;
+}
+
+.verification-item:hover {
+  transform: translateX(3px);
 }
 
 .verification-item > svg {
@@ -11979,11 +12043,18 @@ body {
 
 .disbursement-route > span {
   display: grid;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   place-items: center;
   border-radius: 50%;
   background: #F2F1EC;
+  color: var(--navy);
+  transition: transform 0.2s ease;
+}
+
+.disbursement-route > span svg {
+  width: 15px;
+  height: 15px;
   color: var(--navy);
 }
 
@@ -12098,6 +12169,12 @@ body {
   color: var(--gold);
   font-size: 15px;
   font-weight: 700;
+}
+
+.trust-icons span svg {
+  width: 15px;
+  height: 15px;
+  color: var(--gold);
 }
 
 .trust-icons span:first-child {

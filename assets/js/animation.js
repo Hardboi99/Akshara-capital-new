@@ -182,45 +182,69 @@ function initBannerSttrWrapperAnimation() {
       (gsap.registerPlugin(CustomEase),
       CustomEase.create("osmo-ease", "0.625, 0.05, 0, 1"))),
     (function e() {
-      if ("undefined" != typeof Lenis)
-        if ("undefined" != typeof gsap && void 0 !== window.gsap)
+      if ("undefined" != typeof Lenis) {
+        if ("undefined" != typeof gsap && void 0 !== window.gsap) {
           if (gsap.to && gsap.from && gsap.fromTo) {
-            if (null === lenis)
+            if (null === lenis) {
               try {
-                (window.gsap || (window.gsap = gsap),
-                  (lenis = new Lenis({
-                    lerp: 0.1,
-                    smoothWheel: !0,
-                    smoothTouch: !1,
-                    anchors: !0,
-                  })),
-                  (window.lenis = lenis));
-                let e = null,
-                  t = 0;
-                const r = 16;
-                let o;
-                (lenis.on("scroll", () => {
-                  ((isScrolling = !0),
-                    clearTimeout(o),
-                    (o = setTimeout(() => {
-                      isScrolling = !1;
-                    }, 150)));
-                  performance.now() - t >= r &&
-                    (e && cancelAnimationFrame(e),
-                    (e = requestAnimationFrame(() => {
-                      ("undefined" != typeof ScrollTrigger &&
-                        ScrollTrigger.update(),
-                        (t = performance.now()),
-                        (e = null));
-                    })));
-                }),
-                  requestAnimationFrame(function e(t) {
-                    (lenis && lenis.raf(t), requestAnimationFrame(e));
-                  }));
-              } catch (e) {}
+                window.gsap || (window.gsap = gsap);
+                lenis = new Lenis({
+                  duration: 1.15,
+                  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                  orientation: "vertical",
+                  gestureOrientation: "vertical",
+                  smoothWheel: true,
+                  wheelMultiplier: 1.0,
+                  smoothTouch: false,
+                  touchMultiplier: 1.6,
+                  infinite: false,
+                });
+                window.lenis = lenis;
+
+                // Seamlessly sync Lenis with GSAP ScrollTrigger
+                let scrollTimeout;
+                lenis.on("scroll", () => {
+                  isScrolling = true;
+                  clearTimeout(scrollTimeout);
+                  scrollTimeout = setTimeout(() => {
+                    isScrolling = false;
+                  }, 150);
+                  if (typeof ScrollTrigger !== "undefined") {
+                    ScrollTrigger.update();
+                  }
+                });
+
+                // Unified RAF loop powered by GSAP ticker for 60/120fps fluid frame timing
+                gsap.ticker.add((time) => {
+                  if (lenis) lenis.raf(time * 1000);
+                });
+                gsap.ticker.lagSmoothing(0);
+
+                // Smooth scroll for internal anchor links with header compensation
+                document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                  anchor.addEventListener("click", function (e) {
+                    const targetId = this.getAttribute("href");
+                    if (targetId && targetId !== "#" && targetId !== "#0") {
+                      const targetElem = document.querySelector(targetId);
+                      if (targetElem) {
+                        e.preventDefault();
+                        const headerOffset = document.querySelector(".header-area")?.offsetHeight || 80;
+                        lenis.scrollTo(targetElem, {
+                          offset: -headerOffset,
+                          duration: 1.2,
+                          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                        });
+                      }
+                    }
+                  });
+                });
+              } catch (e) {
+                console.warn("Lenis init error:", e);
+              }
+            }
           } else setTimeout(e, 50);
-        else setTimeout(e, 50);
-      else setTimeout(e, 50);
+        } else setTimeout(e, 50);
+      } else setTimeout(e, 50);
     })());
   const e = document.querySelector(".header-area"),
     t = document.body;
@@ -255,8 +279,8 @@ function initBannerSttrWrapperAnimation() {
             ? s ||
               (gsap.to(e, {
                 y: -e.offsetHeight,
-                duration: 0.2,
-                ease: "power1.inOut",
+                duration: 0.25,
+                ease: "power2.inOut",
                 force3D: !0,
               }),
               (s = !0))
@@ -280,33 +304,60 @@ function initBannerSttrWrapperAnimation() {
       e.length &&
         e.forEach((e) => {
           const t = e.querySelectorAll(
-            "[data-subtitle], [data-title], [data-excerpt], .btn-sttr, .btn, [data-button], .thumbnail-img, .thumb-image, [data-thumb]",
+            "[data-subtitle], [data-title], [data-excerpt], .btn-sttr, .btn, [data-button]",
           );
-          if (0 === t.length) return;
-          t.forEach((e) => {
-            gsap.set(e, {
-              y: 60,
+          const thumb = e.querySelector("[data-thumb], .hero-image-slider-wrapper");
+
+          t.forEach((el) => {
+            gsap.set(el, {
+              y: 45,
+              opacity: 0,
+              filter: "blur(8px)",
+              visibility: "hidden",
+            });
+          });
+
+          if (thumb) {
+            gsap.set(thumb, {
+              y: 35,
+              scale: 0.96,
               opacity: 0,
               filter: "blur(6px)",
               visibility: "hidden",
             });
-          });
-          const r = gsap.timeline({ defaults: { ease: "power2.out" } });
-          t.forEach((e, t) => {
+          }
+
+          const r = gsap.timeline({ defaults: { ease: "power3.out" } });
+          t.forEach((el, idx) => {
             r.fromTo(
-              e,
-              { y: 60, opacity: 0, filter: "blur(6px)", visibility: "hidden" },
+              el,
+              { y: 45, opacity: 0, filter: "blur(8px)", visibility: "hidden" },
               {
                 y: 0,
                 opacity: 1,
                 filter: "blur(0px)",
                 visibility: "visible",
-                ease: "power2.out",
-                duration: 0.6,
+                duration: 0.75,
               },
-              0 === t ? 0 : "-=0.5",
+              0 === idx ? 0.05 : "-=0.55",
             );
           });
+
+          if (thumb) {
+            r.fromTo(
+              thumb,
+              { y: 35, scale: 0.96, opacity: 0, filter: "blur(6px)", visibility: "hidden" },
+              {
+                y: 0,
+                scale: 1,
+                opacity: 1,
+                filter: "blur(0px)",
+                visibility: "visible",
+                duration: 0.9,
+              },
+              "-=0.65",
+            );
+          }
         });
       const t = document.querySelectorAll("[data-digital-hero-banner]");
       t.length &&

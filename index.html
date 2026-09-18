@@ -8788,12 +8788,12 @@
         ) {
           new Swiper(".hero-image-slider", {
             loop: true,
-            speed: 500,
+            speed: 650,
             effect: "slide",
             grabCursor: true,
             watchSlidesProgress: true,
             autoplay: {
-              delay: 3500,
+              delay: 4000,
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             },
@@ -8838,64 +8838,112 @@
 
     <!-- Loan Process Section Interactive Logic -->
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        if (typeof lucide !== "undefined") {
-          lucide.createIcons();
-        }
+      (function () {
+        function initLoanProcess() {
+          if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+            lucide.createIcons();
+          }
 
-        const amountButtons = document.querySelectorAll(".amount-options button");
-        const amountDisplay = document.getElementById("sample-amount");
-        const emiDisplay = document.getElementById("sample-emi");
+          const amountButtons = document.querySelectorAll(".amount-options button");
+          const amountDisplay = document.getElementById("sample-amount");
+          const emiDisplay = document.getElementById("sample-emi");
 
-        if (amountButtons.length && amountDisplay && emiDisplay) {
-          amountButtons.forEach((button) => {
-            button.addEventListener("click", () => {
-              amountButtons.forEach((item) => item.classList.remove("active"));
-              button.classList.add("active");
+          if (amountButtons.length && amountDisplay) {
+            amountButtons.forEach((button) => {
+              button.addEventListener("click", () => {
+                amountButtons.forEach((item) => item.classList.remove("active"));
+                button.classList.add("active");
 
-              amountDisplay.style.opacity = "0";
+                amountDisplay.style.opacity = "0";
+                amountDisplay.style.transform = "translateY(-4px)";
+                if (emiDisplay) {
+                  emiDisplay.style.opacity = "0";
+                  emiDisplay.style.transform = "translateY(-4px)";
+                }
 
-              setTimeout(() => {
-                amountDisplay.textContent = button.dataset.amount;
-                emiDisplay.textContent = `Est. EMI ${button.dataset.emi}`;
-                amountDisplay.style.opacity = "1";
-              }, 150);
-            });
-          });
-        }
-
-        const progress = document.getElementById("process-progress");
-        const cards = document.querySelectorAll(".loan-process__card");
-        const nodes = document.querySelectorAll(".loan-process__timeline-nodes span");
-
-        if (cards.length && progress && nodes.length) {
-          const observer = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-
-                const cardIndex = [...cards].indexOf(entry.target);
-
-                if (cardIndex >= 0) {
-                  for (let i = 0; i <= cardIndex; i++) {
-                    nodes[i].classList.add("active");
+                setTimeout(() => {
+                  if (button.dataset.amount) {
+                    amountDisplay.textContent = button.dataset.amount;
                   }
-                  progress.style.width = `${((cardIndex + 1) / cards.length) * 100}%`;
-                   {
-              threshold: 0.2
+                  if (button.dataset.emi && emiDisplay) {
+                    emiDisplay.textContent = `Est. EMI ${button.dataset.emi}`;
+                  }
+                  amountDisplay.style.opacity = "1";
+                  amountDisplay.style.transform = "translateY(0)";
+                  if (emiDisplay) {
+                    emiDisplay.style.opacity = "1";
+                    emiDisplay.style.transform = "translateY(0)";
+                  }
+                }, 140);
+              });
+            });
+          }
+
+          const progress = document.getElementById("process-progress");
+          const cards = document.querySelectorAll(".loan-process__card");
+          const nodes = document.querySelectorAll(".loan-process__timeline-nodes span");
+
+          if (cards.length) {
+            // Allow clicking timeline step indicators to jump to card
+            if (nodes.length) {
+              nodes.forEach((node, index) => {
+                node.addEventListener("click", () => {
+                  if (cards[index]) {
+                    cards[index].scrollIntoView({ behavior: "smooth", block: "center" });
+                  }
+                });
+              });
             }
-          );
 
-          cards.forEach((card) => {
-            card.style.opacity = "0";
-            card.style.transform = "translateY(35px)";
-            card.style.transition =
-              "opacity .7s ease, transform .7s ease, box-shadow .35s ease";
+            if ("IntersectionObserver" in window) {
+              const observer = new IntersectionObserver(
+                (entries) => {
+                  entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                      entry.target.style.opacity = "1";
+                      entry.target.style.transform = "translateY(0)";
 
-            observer.observe(card);
-          });
+                      const cardIndex = [...cards].indexOf(entry.target);
+                      if (cardIndex >= 0 && progress && nodes.length) {
+                        for (let i = 0; i < nodes.length; i++) {
+                          if (i <= cardIndex) {
+                            nodes[i].classList.add("active");
+                          } else {
+                            nodes[i].classList.remove("active");
+                          }
+                        }
+                        progress.style.width = `${((cardIndex + 1) / cards.length) * 100}%`;
+                      }
+                    }
+                  });
+                },
+                {
+                  threshold: 0.2,
+                  rootMargin: "0px 0px -40px 0px"
+                }
+              );
+
+              cards.forEach((card, i) => {
+                card.style.opacity = "0";
+                card.style.transform = "translateY(30px)";
+                card.style.transition = `opacity 0.6s ease ${i * 0.12}s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${i * 0.12}s, box-shadow 0.35s ease`;
+                observer.observe(card);
+              });
+            } else {
+              cards.forEach((card) => {
+                card.style.opacity = "1";
+                card.style.transform = "none";
+              });
+            }
+          }
         }
-      });
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initLoanProcess);
+        } else {
+          initLoanProcess();
+        }
+      })();
     </script>
     <!-- auth & micro-interactions -->
     <script src="assets/js/auth.js"></script>
